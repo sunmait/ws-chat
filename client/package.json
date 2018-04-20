@@ -1,0 +1,23 @@
+{
+  "name": "sockets",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "socket.io": "^2.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "rollup": "^0.58.1",
+    "rollup-copy-plugin": "0.0.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-resolve": "^3.3.0"
+  },
+  "scripts": {
+    "start": "rollup -c -w"
+  },
+  "author": "k.stasevich",
+  "license": "ISC"
+}
