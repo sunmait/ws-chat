@@ -18,9 +18,27 @@ const init = () => {
     }
   });
 
-  socket.on('chat message', (msg, username) => {
-    chatService.appendMessage(msg, username);
-  });
+  socket.on('chat message', onChatMessage);
+  socket.on('user joined', onUserJoined);
+  socket.on('user left', onUserLeft);
+}
+
+function onChatMessage(msg, username) {
+  chatService.appendMessage(msg, username);
+}
+
+function onUserJoined(username) {
+  const msg = `'${username}' has joined a channel`;
+  const user = 'CHAT';
+
+  chatService.appendMessage(msg, user);
+}
+
+function onUserLeft(username) {
+  const msg = `'${username}' has left a channel`;
+  const user = 'CHAT';
+
+  chatService.appendMessage(msg, user);
 }
 
 function initOnSubmit(callback) {

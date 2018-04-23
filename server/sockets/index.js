@@ -8,15 +8,21 @@ module.exports = (http) => {
   function onConnection(socket) {
     const {username} = socket.handshake.query;
 
-    socket.broadcast.emit('hi');
+    socket.broadcast.emit('user joined', username);
 
-    socket.on('disconnect', function () {
-      // stub
-    });
-
-    socket.on('chat message', function (msg) {
-      io.emit('chat message', msg, username);
-    });
+    socket.on('disconnect', onDisconnect(socket, io, username));
+    socket.on('chat message', onChatMessage(socket, io, username));
   }
 };
 
+function onChatMessage(socket, io, username) {
+  return (msg) => {
+    io.emit('chat message', msg, username);
+  };
+}
+
+function onDisconnect(socket, io, username) {
+  return () => {
+    socket.broadcast.emit('user left', username);
+  };
+}
