@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import chatService from './services/chatService';
 import userService from './services/userService'
+import userIsTypingService from './services/UserIsTypingService'
 
 export default () => {
   userService.init();
@@ -8,19 +9,22 @@ export default () => {
 }
 
 const init = () => {
-  initOnSubmit(
-    (message) => socket.emit('chat message', message)
-  );
-
+  const {username} = userService.getUserInfo();
+  
   const socket = io({
-    query: {
-      username: userService.getUserInfo().username
-    }
+    query: {username}
   });
+
+  initOnSubmit((message) => socket.emit('chat message', message));
+  userIsTypingService.initListener(
+    $('#m'),
+    () => socket.emit('user is typing', username)
+  );
 
   socket.on('chat message', onChatMessage);
   socket.on('user joined', onUserJoined);
   socket.on('user left', onUserLeft);
+  socket.on('user is typing', onUserIsTyping);
 }
 
 function onChatMessage(msg, username) {
@@ -39,6 +43,10 @@ function onUserLeft(username) {
   const user = 'CHAT';
 
   chatService.appendMessage(msg, user);
+}
+
+function onUserIsTyping(username) {
+  userIsTypingService.onUserIsTypingUpdate(username);
 }
 
 function initOnSubmit(callback) {

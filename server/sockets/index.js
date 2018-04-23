@@ -12,8 +12,15 @@ module.exports = (http) => {
 
     socket.on('disconnect', onDisconnect(socket, io, username));
     socket.on('chat message', onChatMessage(socket, io, username));
+    socket.on('user is typing', onUserIsTyping(socket, io));
   }
 };
+
+function onDisconnect(socket, io, username) {
+  return () => {
+    socket.broadcast.emit('user left', username);
+  };
+}
 
 function onChatMessage(socket, io, username) {
   return (msg) => {
@@ -21,8 +28,8 @@ function onChatMessage(socket, io, username) {
   };
 }
 
-function onDisconnect(socket, io, username) {
-  return () => {
-    socket.broadcast.emit('user left', username);
+function onUserIsTyping(socket, io) {
+  return (username) => {
+    socket.broadcast.emit('user is typing', username);
   };
 }
